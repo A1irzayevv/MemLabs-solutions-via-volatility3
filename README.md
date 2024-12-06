@@ -41,7 +41,7 @@ gimp 2424.data
 # List files that loaded to RAM. We only need Alissa's files
 volatility3 -f MemoryDump_Lab1.raw windows.filescan | grep "Alissa Simpson"
 # Dump important.rar file
-volatility3 -f MemoryDump_Lab1.raw -o dumpo/ windows.dumpfiles -Q 0x3b48bc0
+volatility3 -f MemoryDump_Lab1.raw -o dumpo/ windows.dumpfiles --physaddr 0x3b48bc0
 # Find password of rar file by uppercase of hash of Alissa's password
 volatility3 -f MemoryDump_Lab1.raw windows.hashdump
 # Unrar file
@@ -69,9 +69,9 @@ Flag = flag{w3lc0m3_T0_$T4g3_!_Of_L4B_2})
 # Find location of hidden.kdbx and Password.png
 volatility3 -f MemoryDump_Lab2.raw windows.filescan
 # Dump process to a file
-volatility3 -f MemoryDump_Lab2.raw windows.dumpfiles -Q 0x3fb112a0 -D dumphidden/
+volatility3 -f MemoryDump_Lab2.raw -o dumpo/ windows.dumpfiles --physaddr 0x3fb112a0
 # Dump Password.png to a file
-volatility3 -f MemoryDump_Lab1.raw windows.dumpfiles -Q 0x3fce1c70 -D dumpPassword/
+volatility3 -f MemoryDump_Lab1.raw -o dumpo/ windows.dumpfiles --physaddr 0x3fce1c70
 # Change extension of file
 mv dumphidden/LONG_DUMP_FILE_NAME dumphidden/Hidden.kdbx
 # Open Hidden.kdbx file on KeePassXC
