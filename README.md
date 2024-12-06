@@ -90,6 +90,7 @@ keepassxc
 ```bash
 # Dump Google Chrome history
 volatility3 -f MemoryDump_Lab2.raw -o dumpo/ windows.dumpfiles --physaddr 0x3fcfb1d0
+strings file.0x3fcfb1d0.0xfa8000efd1d0.DataSectionObject.History.dat
 # There is a interesting link to mega.nz folder
 https://mega.nz/folder/TrgSQQTS#H0ZrUzF0B-ZKNM3y9E76lg
 ```
