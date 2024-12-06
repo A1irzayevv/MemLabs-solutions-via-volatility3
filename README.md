@@ -51,6 +51,54 @@ unar important.rar (Password required!)
 ![App Screenshot](images/vol3-lab1_flag3.png)
 
 
+## MemLabs Lab 2
+
+#### Use the following commands to acquire 1st flag
+
+```bash
+# List all process envars
+volatility3 -f MemoryDump_Lab2.raw windows.envars
+```
+Flag_encoded = ZmxhZ3t3M2xjMG0zX1QwXyRUNGczXyFfT2ZfTDRCXzJ9
+
+Flag = flag{w3lc0m3_T0_$T4g3_!_Of_L4B_2})
+
+#### Use the following commands to acquire 2nd flag
+
+```bash
+# Find location of hidden.kdbx and Password.png
+volatility3 -f MemoryDump_Lab2.raw windows.filescan
+# Dump process to a file
+volatility3 -f MemoryDump_Lab2.raw windows.dumpfiles -Q 0x3fb112a0 -D dumphidden/
+# Dump Password.png to a file
+volatility3 -f MemoryDump_Lab1.raw windows.dumpfiles -Q 0x3fce1c70 -D dumpPassword/
+# Change extension of file
+mv dumphidden/LONG_DUMP_FILE_NAME dumphidden/Hidden.kdbx
+# Open Hidden.kdbx file on KeePassXC
+sudo apt update
+sudo apt install keepassxc
+keepassxc
+```
+###### Extract Password from Password.png with zooming in right-down corner
+![App Screenshot](images/vol3-lab2_flag2_passzoom.png)
+![App Screenshot](images/vol3-lab2_flag2_pass.png)
+###### Find flag location from saved passwords in DB
+![App Screenshot](images/vol3-lab2_flag2.png)
+
+#### Use the following commands to acquire 3rd flag
+
+```bash
+# Dump Google Chrome history
+volatility3 -f MemoryDump_Lab2.raw -o dumpo/ windows.dumpfiles --physaddr 0x3fcfb1d0
+# There is a interesting link to mega.nz folder
+https://mega.nz/folder/TrgSQQTS#H0ZrUzF0B-ZKNM3y9E76lg
+```
+###### Download and open file
+![App Screenshot](images/vol3-lab2_flag3-zip.png)
+###### Insert Password (Found it from hint in zip file that is SHA1 of flag3_Lab1(flag{w3ll_3rd_stage_was_easy}) = 6045dd90029719a039fd2d2ebcca718439dd100a)
+![App Screenshot](images/vol3-lab2_flag3.png)
+
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
