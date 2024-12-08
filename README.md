@@ -100,6 +100,100 @@ https://mega.nz/folder/TrgSQQTS#H0ZrUzF0B-ZKNM3y9E76lg
 ![App Screenshot](images/vol3-lab2_flag3.png)
 
 
+## MemLabs Lab 3
+
+#### Use the following commands to acquire 1st part of the flag
+##### A malicious script encrypted a very secret piece of information. So, both of the encryptor and encrypted files must be loaded to the RAM.
+```bash
+# Time to run filescan for cached files
+volatility3 -f MemoryDump_Lab3.raw windows.filescan
+# After a few greps we can find cached evilscript.py. Dump it
+volatility3 -f MemoryDump_Lab3.raw -o dumpo/ windows.dumpfiles --physaddr 0x3de1b5f0
+# Read the code
+cat dumpo/evil.py
+```
+
+Here is the python code:
+```python
+import sys
+import string
+
+def xor(s):
+
+        a = ''.join(chr(ord(i)^3) for i in s)
+        return a
+
+
+def encoder(x):
+
+        return x.encode("base64")
+
+
+if __name__ == "__main__":
+
+        f = open("C:\\Users\\hello\\Desktop\\vip.txt", "w")
+
+        arr = sys.argv[1]
+
+        arr = encoder(xor(arr))
+
+        f.write(arr)
+
+        f.close()
+```
+
+It is encrypting file called "vip.txt". Dump it from cache
+```bash
+# Dumping vip.txt
+volatility3 -f MemoryDump_Lab3.raw -o dumpo/ windows.dumpfiles --physaddr 0x3e727e50
+# Read file content
+cat vip.txt
+```
+After reading python code we can eaisly decrypt the content of the vip.txt
+```python
+import base64
+
+def reverse_xor(s):
+    return ''.join(chr(ord(i) ^ 3) for i in s)
+
+# Encoded string
+encoded = "am1gd2V4M20wXGs3b2U="
+
+# Step 1: Decode from Base64
+decoded = base64.b64decode(encoded).decode()
+
+# Step 2: Reverse the XOR operation
+original = reverse_xor(decoded)
+original
+```
+Flag = inctf{0n3_h4lf
+
+#### Use the following commands to acquire 2nd part of the flag
+##### You will need this steghide to solve the challenge. Steghide is a stenography tool, which used for hide some data in other form of the data mostly text in images. Search for image files and after a few greps we found suspision1.jpeg. Dump it
+```bash
+volatility3 -f MemoryDump_Lab3.raw -o dumpo/ windows.dumpfiles --physaddr 0x4f34148
+```
+
+Check image:
+![App Screenshot](images/vol3-lab3_flag2-steg.png)
+##### Hmm, there is some some noise along the diagonal of the image which is common case in stenography. But it is not a case with the real one, which I found online by image code under the dumped one.
+![App Screenshot](images/vol3-lab3_flag2-orig.png)
+##### Maybe, some data is hidden there :D. Let's check
+```bash
+steghide extract -sf dumpo/suspision1.jpeg
+```
+##### It will ask for a passphrase. It is 1st flag, we found. Steghide will output file named "secret text". Let's check it
+```bash
+cat secret\ text
+
+_1s_n0t_3n0ugh}
+```
+Flag = _1s_n0t_3n0ugh}
+
+#### Complete flag of MemLabs Lab 3
+#### Flag = flag1 + flag2 = inctf{0n3_h4lf_1s_n0t_3n0ugh}
+
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
